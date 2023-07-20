@@ -4,7 +4,14 @@ Write Solidity ERC-20 on Solana using Solang!
 
 ## Instructions
 
-First, install solana CLI and solang. Navigate to the root folder now.
+First, install solana CLI and solang. 
+```bash
+# solana
+sh -c "$(curl -sSfL https://release.solana.com/v1.16.4/install)"
+
+# solang
+brew install hyperledger/solang/solang
+```
 
 Then, run the solana-test-validator
 ```bash
