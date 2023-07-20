@@ -2,6 +2,11 @@
 
 Write Solidity ERC-20 on Solana using Solang!
 
+Example Account & Transactions on Devnet: 
+- [Contract](https://solscan.io/account/CR3JGL7NVpm9Y7ohEHw92x3SPseMvPwgx1oviu5ixJKv?cluster=devnet)
+- [Mint](https://solscan.io/tx/37suTLk2enadoFsRpc43CbUWkNDty7sof9BF4HhJKoyhLok3rWBytQbRrLErQwrhAxcviyCbAKJGrHAbzYeLDfFS?cluster=devnet)
+- [Transfer](https://solscan.io/tx/573tJ5z1mR58NSvEGNT58pRno9ZyVkyFgoPP9dVUdf6BAMQvxepSKEUjLz2k6jDh1pJ38Fj91xBNJ52T8hubpohA?cluster=devnet)
+
 ## Instructions
 
 First, install solana CLI and solang. 
