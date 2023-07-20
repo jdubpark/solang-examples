@@ -1,0 +1,538 @@
+{
+  "version": "0.3.1",
+  "name": "BasicToken",
+  "docs": [
+    "notice: NOTE Basic ERC-20-like token.\nBy inherting `Ownable`, the authority is set as the inherited `owner`."
+  ],
+  "instructions": [
+    {
+      "name": "owner",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [],
+      "returns": "publicKey"
+    },
+    {
+      "name": "new",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [
+        {
+          "name": "owner",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "setOwner",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [
+        {
+          "name": "owner",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "mint",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [],
+      "returns": "publicKey"
+    },
+    {
+      "name": "new",
+      "docs": [
+        "notice: NOTE Requires `owner` and `mintAddress` as signers.\nACCOUNT owner {signer} The owner account to pay for the transactions and be the token mint authority.\nACCOUNT mintAddress {signer} The mint account key to be created & initialize as Mint."
+      ],
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [
+        {
+          "name": "owner",
+          "type": "publicKey"
+        },
+        {
+          "name": "mintaddress",
+          "type": "publicKey"
+        },
+        {
+          "name": "lamports",
+          "type": "u64"
+        },
+        {
+          "name": "decimals",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "transfer",
+      "docs": [
+        "notice: Transfer @amount token from @from to @to. The transaction should be signed by the owner\nkeypair of the from account.\nACCOUNT from_user_ata {writable} The sender's ATA. Derived from `from` param.\nACCOUNT to_user_ata {writable} The receiver's ATA. Derived from `to` param.\nACCOUNT from {writable, signer} Owner account of the from_user_ata.",
+        "param: the sender's address (not the ATA)",
+        "param: the receiver's address (not the ATA)",
+        "param: the amount to transfer"
+      ],
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [
+        {
+          "name": "from",
+          "type": "publicKey"
+        },
+        {
+          "name": "to",
+          "type": "publicKey"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "approve",
+      "docs": [
+        "notice: NOTE Approve an amount to a delegate. This transaction should be signed by the owner.\nWrapper for https://github.com/solana-labs/solana-program-library/blob/master/token/program/src/processor.rs#L580\nACCOUNT spender_user_ata {writable} The approver's ATA. Derived from `spender` param.\nACCOUNT delegate_user_ata {writable} The delegate's ATA. Derived from `delegate` param.\nACCOUNT spender {writable, signer} Owner account of the spender_user_ata.",
+        "param: the approver's address (not the ATA)",
+        "param: the delegate's address (not the ATA)",
+        "param: the amount to approve"
+      ],
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [
+        {
+          "name": "spender",
+          "type": "publicKey"
+        },
+        {
+          "name": "delegate",
+          "type": "publicKey"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "totalSupply",
+      "docs": [
+        "notice: Get the total supply for the mint, i.e. the total amount in circulation\nACCOUNT mint_account {} This token account holding the Mint info."
+      ],
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [],
+      "returns": "u64"
+    },
+    {
+      "name": "balanceOf",
+      "docs": [
+        "notice: Get the balance for a user account.\nACCOUNT associated_token_account {} The user's ATA. Derived from `user` param.",
+        "param: The user's address (not the ATA)"
+      ],
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [
+        {
+          "name": "user",
+          "type": "publicKey"
+        }
+      ],
+      "returns": "u64"
+    },
+    {
+      "name": "decimals",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [],
+      "returns": "u8"
+    },
+    {
+      "name": "getMint",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [],
+      "returns": "publicKey"
+    },
+    {
+      "name": "getTokenAccountData",
+      "docs": [
+        "notice: Fetch the owner, mint account and balance for an associated token account.\nACCOUNT tokenAccount {} A user's ATA holding the user's token info (of a particular token mint).",
+        "param: The token account",
+        "return: struct TokenAccountData"
+      ],
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [
+        {
+          "name": "tokenaccount",
+          "type": "publicKey"
+        }
+      ],
+      "returns": {
+        "defined": "TokenAccountData"
+      }
+    },
+    {
+      "name": "getMintAccountData",
+      "docs": [
+        "notice: Retrieve the information saved in a mint account\nACCOUNT mintAccount {} A mint account holding the Mint info.",
+        "return: the MintAccountData struct"
+      ],
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": "MintAccountData"
+      }
+    },
+    {
+      "name": "new",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true,
+          "isOptional": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [
+        {
+          "name": "owner",
+          "type": "publicKey"
+        },
+        {
+          "name": "mintaddress",
+          "type": "publicKey"
+        },
+        {
+          "name": "lamports",
+          "type": "u64"
+        },
+        {
+          "name": "decimals",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "mintTo",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [
+        {
+          "name": "to",
+          "type": "publicKey"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "burn",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [
+        {
+          "name": "from",
+          "type": "publicKey"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "AccountState",
+      "docs": [
+        "notice: This enum represents the state of a token account"
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Uninitialized"
+          },
+          {
+            "name": "Initialized"
+          },
+          {
+            "name": "Frozen"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenAccountData",
+      "docs": [
+        "notice: This struct is the return of 'getTokenAccountData'"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mintAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "balance",
+            "type": "u64"
+          },
+          {
+            "name": "delegate_present",
+            "type": "bool"
+          },
+          {
+            "name": "delegate",
+            "type": "publicKey"
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": "AccountState"
+            }
+          },
+          {
+            "name": "is_native_present",
+            "type": "bool"
+          },
+          {
+            "name": "is_native",
+            "type": "u64"
+          },
+          {
+            "name": "delegated_amount",
+            "type": "u64"
+          },
+          {
+            "name": "close_authority_present",
+            "type": "bool"
+          },
+          {
+            "name": "close_authority",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintAccountData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority_present",
+            "type": "bool"
+          },
+          {
+            "name": "mint_authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "supply",
+            "type": "u64"
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
+          },
+          {
+            "name": "is_initialized",
+            "type": "bool"
+          },
+          {
+            "name": "freeze_authority_present",
+            "type": "bool"
+          },
+          {
+            "name": "freeze_authority",
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "address": "CR3JGL7NVpm9Y7ohEHw92x3SPseMvPwgx1oviu5ixJKv"
+  }
+}

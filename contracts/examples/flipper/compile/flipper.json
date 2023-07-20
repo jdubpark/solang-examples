@@ -1,0 +1,69 @@
+{
+  "version": "0.3.1",
+  "name": "flipper",
+  "instructions": [
+    {
+      "name": "new",
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": true,
+          "isOptional": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true,
+          "isOptional": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [
+        {
+          "name": "initvalue",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "flip",
+      "docs": [
+        "notice: A message that can be called on instantiated contracts.\nThis one flips the value of the stored `bool` from `true`\nto `false` and vice versa."
+      ],
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": true,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "get",
+      "docs": [
+        "notice: Simply returns the current value of our `bool`."
+      ],
+      "accounts": [
+        {
+          "name": "dataAccount",
+          "isMut": false,
+          "isSigner": false,
+          "isOptional": false
+        }
+      ],
+      "args": [],
+      "returns": "bool"
+    }
+  ],
+  "metadata": {
+    "address": "F1ipperKF9EfD821ZbbYjS319LXYiBmjhzkkf5a26rC"
+  }
+}
