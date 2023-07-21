@@ -13,7 +13,8 @@ contract ERC20Like is IERC20Like, Ownable {
 	address public mint;
 	address constant TOKEN_PROGRAM_ID = address"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
 	address constant ASSOCIATED_TOKEN_PROGRAM_ID = address"ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL";
-	uint64 constant private MINT_SIZE = 82; // Size of MintAccountData, which is 4+32+8+1+1+4+32 = 82 bytes
+	uint64 constant MINT_SIZE = 82; // Size of MintAccountData, which is 4+32+8+1+1+4+32 = 82 bytes
+	uint64 constant MINT_LAMPORTS = 1461600; // Rent-exempt minimum lamports required for 82 bytes
 
 	enum TokenInstruction {
 		InitializeMint, // 0
@@ -55,14 +56,14 @@ contract ERC20Like is IERC20Like, Ownable {
 	/// ACCOUNT owner {signer} The owner account to pay for the transactions and be the token mint authority.
 	/// ACCOUNT mintAddress {signer} The mint account key to be created & initialize as Mint.
 	///
-	constructor(address owner, address mintAddress, uint64 lamports, uint8 decimals) Ownable(owner) {
+	constructor(address owner, address mintAddress, uint8 _decimals) Ownable(owner) {
 		// TODO: check here that `owner` and `mintAddress` are included in tx.accounts & have `is_signer = true`
 		//
 		// Create an account for the token mint at the address `mintAddress`
 		//
 
 		mint = mintAddress; // save as the mint address
-		SystemInstruction.create_account(owner, mintAddress, lamports, MINT_SIZE, TOKEN_PROGRAM_ID);
+		SystemInstruction.create_account(owner, mintAddress, MINT_LAMPORTS, MINT_SIZE, TOKEN_PROGRAM_ID);
 
 		//
 		// Initialize the token mint at the address `mintAddress`
@@ -70,7 +71,7 @@ contract ERC20Like is IERC20Like, Ownable {
 
 		bytes instr = new bytes(67);
 		instr[0] = uint8(TokenInstruction.InitializeMint2);
-		instr[1] = decimals; // 1 byte
+		instr[1] = _decimals; // 1 byte
 		instr.writeAddress(owner, 2); // Mint Authority (32 bytes)
 		instr[34] = 0; // Freeze Authority COPtion = 0 (1 byte)
 		instr.writeAddress(address(0), 35); // Freeze Authority = null (32 bytes)
@@ -80,6 +81,18 @@ contract ERC20Like is IERC20Like, Ownable {
 		];
 
 		TOKEN_PROGRAM_ID.call{accounts: metas}(instr);
+	}
+
+	modifier addressNeedsToSign(address user) {
+		for (uint64 i = 0; i < tx.accounts.length; i++) {
+			AccountInfo acctInfo = tx.accounts[i];
+			if (acctInfo.key == user && acctInfo.is_signer) {
+				_;
+				return;
+			}
+		}
+
+		revert("address is not signer");
 	}
 
 	/// NOTE Mint new tokens. The transaction should be signed by the mint authority keypair.
@@ -359,16 +372,16 @@ contract ERC20Like is IERC20Like, Ownable {
 		data[0] = uint8(TokenInstruction.SetAuthority);
 		data[1] = uint8(AuthorityType.MintTokens);
 		data[3] = 0;
-		
+
 		TOKEN_PROGRAM_ID.call{accounts: metas}(data);
 	}
 
 	function _toBytes(address a) private pure returns (bytes memory) {
-    return abi.encodePacked(a);
+		return abi.encodePacked(a);
 	}
 
 	// TODO: Save bytes of `TOKEN_PROGRAM_ID` and `mint` in global storage to save compute (since storage write is one-off)
-	function _getAssociatedTokenAddress(address user) private view returns (address ata) {
+	function _getAssociatedTokenAddress(address user) private pure returns (address ata) {
 		(ata,) = try_find_program_address([
 			_toBytes(user),
 			_toBytes(TOKEN_PROGRAM_ID),
