@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test:basic_token": "mocha --require ts-node/register --require tsconfig-paths/register --timeout 60000 --exit \"src/token/token.spec.ts\""
+    "test:basic_token": "mocha --require ts-node/register --require tsconfig-paths/register --timeout 60000 --exit \"src/token.spec.ts\""
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.28.1-beta.1",

@@ -6,7 +6,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { homedir } from 'os'
 
-import { getTokenUser } from './utils'
+import { createTokenUser } from './utils'
 
 const TOKEN_PROGRAM_ID = 'CR3JGL7NVpm9Y7ohEHw92x3SPseMvPwgx1oviu5ixJKv'
 
@@ -22,6 +22,12 @@ export async function loadEnvironment(pathToIDLJsonFromSrc: string) {
 
   const provider = AnchorProvider.local(process.env.RPC_URL || 'http://127.0.0.1:8899')
   const program = new Program(idl, TOKEN_PROGRAM_ID, provider)
+
+  //
+  // Note: By default, the owner of the Token (e.g. can mint) is the account loaded locally.
+  //
+
+  const owner = provider.wallet.publicKey
 
   //
   // Create storage account to store the contract data
@@ -57,7 +63,7 @@ export async function loadEnvironment(pathToIDLJsonFromSrc: string) {
 
   const initTxId = await program.methods
     .new(
-      provider.wallet.publicKey, // owner (also payer)
+      owner, // owner, also payer
       mintPubkey, // mint address
       new BN(mintLamports), // lamports
       new BN(mintDecimals) // decimals
@@ -70,21 +76,21 @@ export async function loadEnvironment(pathToIDLJsonFromSrc: string) {
   return {
     provider,
     connection: provider.connection,
-    payer: provider.wallet.publicKey,
+    owner,
     program,
-    storage: storageKeypair,
-    tokenMint: mintKeypair,
+    storageKeypair,
+    tokenKeypair: mintKeypair, // == token mint
 		decimals: new BN(mintDecimals),
   }
 }
 
 export async function loadEnvironmentWithUsers(pathToIDLJsonFromSrc: string, count: number) {
   const env = await loadEnvironment(pathToIDLJsonFromSrc)
-  const { provider, tokenMint } = env
+  const { provider, tokenKeypair } = env
 
 	const users: [Keypair, Account][] = []
 	for (let i = 0; i < count; i++) {
-		const userData = await getTokenUser(provider, tokenMint)
+		const userData = await createTokenUser(provider, tokenKeypair)
 		users.push([userData.user, userData.userTokenAccount])
 	}
 

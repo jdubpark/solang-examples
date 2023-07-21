@@ -2,7 +2,7 @@
   "version": "0.3.1",
   "name": "BasicToken",
   "docs": [
-    "notice: NOTE Basic ERC-20-like token.\nBy inherting `Ownable`, the authority is set as the inherited `owner`."
+    "notice: NOTE Basic ERC-20-like token on Solana! Run the tests in `tests/src/token` using `yarn test:basic_token`."
   ],
   "instructions": [
     {
