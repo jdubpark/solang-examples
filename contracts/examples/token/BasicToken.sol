@@ -5,7 +5,8 @@ import {ERC20Like} from '../../libraries/token/ERC20Like.sol';
 
 contract BasicToken is ERC20Like {
     @payer(payer)
-    constructor(address owner, address mintAddress, uint8 _decimals) ERC20Like(owner, mintAddress, _decimals) {}
+    constructor(address owner, address mintAddress, uint8 _decimals) 
+        ERC20Like(owner, mintAddress, _decimals) {}
 
     function mintTo(address to, uint64 amount) onlyOwner public {
         super._mintTo(to, amount);
